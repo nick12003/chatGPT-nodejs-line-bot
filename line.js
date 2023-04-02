@@ -36,7 +36,11 @@ async function eventHandle(event) {
 
   waitingList = [...waitingList, event.source.userId];
 
-  const responseMessage = await replyText(event.message.text, event.source.userId);
+  const responseMessage = await replyText(
+    event.message.text,
+    event.source.userId,
+    event.replyToken
+  );
 
   waitingList = waitingList.filter((item) => item != event.source.userId);
 
@@ -44,4 +48,4 @@ async function eventHandle(event) {
   return lineClient.replyMessage(event.replyToken, responseMessage);
 }
 
-export { lineMiddleware, eventHandle };
+export { lineMiddleware, eventHandle, lineClient };

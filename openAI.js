@@ -13,7 +13,7 @@ const openAI = new OpenAIApi(
   })
 );
 
-async function replyText(message, userId) {
+async function replyText(message, userId, replyToken) {
   console.info(`replyText-${userId}`, message);
   let messages = [];
 
@@ -34,19 +34,38 @@ async function replyText(message, userId) {
     },
   ];
 
-  // request answer from chatGPT
-  const { data } = await openAI.createChatCompletion({
-    model: process.env.OPENAI_MODEL ?? "gpt-3.5-turbo",
-    messages,
-    max_tokens: isNaN(defaultTokens) ? 500 : defaultTokens,
-  });
+  let gptResult = {};
 
-  const [choices] = data.choices;
+  try {
+    // request answer from chatGPT
+    const { data } = await openAI.createChatCompletion({
+      model: process.env.OPENAI_MODEL ?? "gpt-3.5-turbo",
+      messages,
+      max_tokens: isNaN(defaultTokens) ? 500 : defaultTokens,
+    });
 
-  console.info("ai response", choices);
+    const [choices] = data.choices;
+
+    console.info("ai response", choices);
+
+    gptResult = { ...choices.message };
+  } catch (error) {
+    if (error.response) {
+      const { status, statusText, config } = error.response;
+      throw {
+        name: "chatGPT",
+        status,
+        statusText,
+        userId,
+        replyToken,
+        requestData: config.data,
+      };
+    }
+    throw { replyToken, error };
+  }
 
   // save history messages to redis
-  await set(userId, JSON.stringify([...messages, { ...choices.message, role: "system" }]));
+  await set(userId, JSON.stringify([...messages, { ...gptResult, role: "system" }]));
 
   // create a echoing text message
   return { type: "text", text: choices.message.content.trim() };
