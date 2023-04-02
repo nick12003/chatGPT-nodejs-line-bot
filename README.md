@@ -53,7 +53,7 @@ OPENAI_API_KEY=
 OPENAI_MAX_TOKENS=500
 
 
-# redis的 endpoint
+# redis的 endpoint 格式為 redis:// + endpoint
 REDIS_URL=
 # redis的 密碼
 REDIS_PASSWORD=
