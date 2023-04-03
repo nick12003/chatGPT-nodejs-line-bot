@@ -14,7 +14,7 @@ const openAI = new OpenAIApi(
 );
 
 async function replyText(message, userId, replyToken) {
-  console.info(`replyText-${userId}`, message);
+  console.info("Asking AI - ", { message, userId, replyToken });
   let messages = [];
 
   // get history from redis
@@ -37,16 +37,18 @@ async function replyText(message, userId, replyToken) {
   let gptResult = {};
 
   try {
-    // request answer from chatGPT
-    const { data } = await openAI.createChatCompletion({
+    const options = {
       model: process.env.OPENAI_MODEL ?? "gpt-3.5-turbo",
       messages,
       max_tokens: isNaN(defaultTokens) ? 500 : defaultTokens,
-    });
+    };
+    console.info("Create chat completion - ", options);
+    // request answer from chatGPT
+    const { data } = await openAI.createChatCompletion(options);
 
     const [choices] = data.choices;
 
-    console.info("ai response", choices);
+    console.info("Ai response - ", choices);
 
     gptResult = { ...choices.message };
   } catch (error) {

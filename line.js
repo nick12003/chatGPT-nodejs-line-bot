@@ -36,13 +36,15 @@ async function eventHandle(event) {
 
   waitingList = [...waitingList, event.source.userId];
 
-  const responseMessage = await replyText(
-    event.message.text,
-    event.source.userId,
-    event.replyToken
-  );
+  let responseMessage = "";
 
-  waitingList = waitingList.filter((item) => item != event.source.userId);
+  try {
+    responseMessage = await replyText(event.message.text, event.source.userId, event.replyToken);
+  } catch (error) {
+    throw error;
+  } finally {
+    waitingList = waitingList.filter((item) => item != event.source.userId);
+  }
 
   // use reply API
   return lineClient.replyMessage(event.replyToken, responseMessage);
