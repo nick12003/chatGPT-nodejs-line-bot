@@ -2,10 +2,12 @@ import { Configuration, OpenAIApi } from "openai";
 import { get, set } from "./redis.js";
 
 const defaultTokens = parseInt(process.env.OPENAI_MAX_TOKENS);
+const organizationId = process.env.OPENAI_ORGANIZATION_ID;
 
 const openAI = new OpenAIApi(
   new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
+    organization: organizationId,
   })
 );
 
