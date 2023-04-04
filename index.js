@@ -1,9 +1,6 @@
-import dotenv from "dotenv";
 import express from "express";
 import { lineMiddleware, eventHandle, lineClient } from "./line.js";
 import { redisRouter } from "./redis.js";
-
-dotenv.config();
 
 // create Express app
 // about Express itself: https://expressjs.com/

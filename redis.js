@@ -1,8 +1,5 @@
 import express from "express";
-import dotenv from "dotenv";
 import { createClient } from "redis";
-
-dotenv.config();
 
 const defaultMin = parseInt(process.env.REDIS_EXPIRE_TIME);
 

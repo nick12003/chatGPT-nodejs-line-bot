@@ -1,9 +1,6 @@
-import dotenv from "dotenv";
 import Line from "@line/bot-sdk";
 
 import { replyText } from "./openAI.js";
-
-dotenv.config();
 
 let waitingList = [];
 

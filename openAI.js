@@ -1,9 +1,5 @@
-import dotenv from "dotenv";
 import { Configuration, OpenAIApi } from "openai";
-
 import { get, set } from "./redis.js";
-
-dotenv.config();
 
 const defaultTokens = parseInt(process.env.OPENAI_MAX_TOKENS);
 
@@ -70,7 +66,7 @@ async function replyText(message, userId, replyToken) {
   await set(userId, JSON.stringify([...messages, { ...gptResult, role: "system" }]));
 
   // create a echoing text message
-  return { type: "text", text: choices.message.content.trim() };
+  return { type: "text", text: gptResult.content.trim() };
 }
 
 export { replyText };
